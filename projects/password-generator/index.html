@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Password Generator | Koichi Nagata</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Instrument+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../style.css"></head><body><div class="wrap">
+<nav><a class="brand" href="../../">&larr; Portfolio</a><a href="https://github.com/nagatakoichi7-glitch/portfolio/tree/main/projects/password-generator">View source</a></nav>
+<h1 style="font-size:2.6rem">Password Generator</h1><p class="muted">Generated locally with the Web Crypto API. Nothing is sent anywhere.</p>
+<div class="app">
+<div class="row"><input id="o" readonly aria-label="Generated password" style="font-family:monospace"><button class="btn" id="cp">Copy</button></div>
+<div class="row"><label>Length <input id="n" type="number" min="6" max="64" value="16" style="width:80px"></label></div>
+<div class="row"><label><input type="checkbox" id="u" checked> Uppercase</label><label><input type="checkbox" id="w" checked> Lowercase</label><label><input type="checkbox" id="d" checked> Numbers</label><label><input type="checkbox" id="s" checked> Symbols</label></div>
+<button class="btn" id="g">Generate password</button><p class="muted" id="m" role="status"></p>
+</div></div>
+<script>
+
+const $=id=>document.getElementById(id),sets={u:"ABCDEFGHIJKLMNOPQRSTUVWXYZ",w:"abcdefghijklmnopqrstuvwxyz",d:"0123456789",s:"!@#$%^&*()-_=+[]{};:,.?"};
+function gen(){let pool="",n=Math.min(64,Math.max(6,+$("n").value||16));
+for(const k in sets)if($(k).checked)pool+=sets[k];
+if(!pool){$("m").textContent="Select at least one character type.";return}
+const r=new Uint32Array(n);crypto.getRandomValues(r);$("o").value=Array.from(r,v=>pool[v%pool.length]).join("");$("m").textContent=""}
+$("g").onclick=gen;
+$("cp").onclick=()=>{if(!$("o").value)return;navigator.clipboard.writeText($("o").value).then(()=>$("m").textContent="Copied.",()=>$("m").textContent="Copy failed. Select the text and copy it manually.")};gen();
+</script></body></html>

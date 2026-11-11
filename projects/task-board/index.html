@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Task Board | Koichi Nagata</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Instrument+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../style.css"></head><body><div class="wrap">
+<nav><a class="brand" href="../../">&larr; Portfolio</a><a href="https://github.com/nagatakoichi7-glitch/portfolio/tree/main/projects/task-board">View source</a></nav>
+<h1 style="font-size:2.6rem">Task Board</h1><p class="muted">Add tasks, tick them off, and filter. Saved in your browser.</p>
+<div class="app">
+<div class="row"><input id="t" placeholder="New task" aria-label="New task"><button class="btn" id="add">Add task</button></div>
+<div class="row"><select id="f" aria-label="Filter"><option value="all">All</option><option value="open">Open</option><option value="done">Done</option></select></div>
+<ul class="list" id="l"></ul><p class="muted" id="c"></p>
+</div></div>
+<script>
+
+let tasks=[];try{tasks=JSON.parse(localStorage.getItem("tasks"))||[]}catch(e){}
+const $=id=>document.getElementById(id);
+function save(){try{localStorage.setItem("tasks",JSON.stringify(tasks))}catch(e){}render()}
+function render(){const f=$("f").value,l=$("l");l.innerHTML="";
+tasks.filter(t=>f=="all"||(f=="done")==t.done).forEach(t=>{const li=document.createElement("li");
+const lb=document.createElement("label");const cb=document.createElement("input");cb.type="checkbox";cb.checked=t.done;
+cb.onchange=()=>{t.done=cb.checked;save()};lb.append(cb," ",t.text);if(t.done)lb.style.textDecoration="line-through";
+const x=document.createElement("button");x.className="x";x.textContent="\u00d7";x.setAttribute("aria-label","Delete task");
+x.onclick=()=>{tasks=tasks.filter(o=>o!==t);save()};li.append(lb,x);l.append(li)});
+$("c").textContent=tasks.length?tasks.filter(t=>!t.done).length+" open of "+tasks.length:"No tasks yet. Add your first one above."}
+function add(){const v=$("t").value.trim();if(!v)return;tasks.push({text:v,done:false});$("t").value="";save()}
+$("add").onclick=add;$("t").onkeydown=e=>{if(e.key=="Enter")add()};$("f").onchange=render;render();
+</script></body></html>

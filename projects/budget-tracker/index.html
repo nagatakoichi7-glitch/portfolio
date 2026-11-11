@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Budget Tracker | Koichi Nagata</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Instrument+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../style.css"></head><body><div class="wrap">
+<nav><a class="brand" href="../../">&larr; Portfolio</a><a href="https://github.com/nagatakoichi7-glitch/portfolio/tree/main/projects/budget-tracker">View source</a></nav>
+<h1 style="font-size:2.6rem">Budget Tracker</h1><p class="muted">Log income and expenses. Your data stays in this browser.</p>
+<div class="app">
+<div class="row"><input id="d" placeholder="Description" aria-label="Description"><input id="a" type="number" step="0.01" placeholder="Amount" aria-label="Amount"><select id="k" aria-label="Type"><option value="1">Income</option><option value="-1">Expense</option></select><button class="btn" id="add">Add entry</button></div>
+<h2 id="b"></h2><p class="muted" id="s"></p><ul class="list" id="l"></ul>
+</div></div>
+<script>
+
+let e=[];try{e=JSON.parse(localStorage.getItem("budget"))||[]}catch(x){}
+const $=id=>document.getElementById(id),m=n=>"\u20b1"+n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+function save(){try{localStorage.setItem("budget",JSON.stringify(e))}catch(x){}render()}
+function render(){const l=$("l");l.innerHTML="";let inc=0,exp=0;
+e.forEach(o=>{o.v>0?inc+=o.v:exp+=-o.v;const li=document.createElement("li"),s=document.createElement("span");
+s.textContent=o.d+": "+(o.v>0?"+":"-")+m(Math.abs(o.v));const b=document.createElement("button");b.className="x";b.textContent="\u00d7";
+b.setAttribute("aria-label","Delete entry");b.onclick=()=>{e=e.filter(z=>z!==o);save()};li.append(s,b);l.append(li)});
+$("b").textContent="Balance "+m(inc-exp);$("s").textContent=e.length?"Income "+m(inc)+" | Expenses "+m(exp):"No entries yet. Add income or an expense above."}
+$("add").onclick=()=>{const d=$("d").value.trim(),a=parseFloat($("a").value);if(!d||!(a>0))return;e.push({d,v:a*$("k").value});$("d").value=$("a").value="";save()};render();
+</script></body></html>
